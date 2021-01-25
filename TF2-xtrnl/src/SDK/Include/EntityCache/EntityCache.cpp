@@ -3,10 +3,12 @@
 
 void CEntityCache::Fill()
 {
-	m_Local = g_Client.GetLocalPlayer();
+	CEntity _Local = g_Client.GetLocalPlayer();
 
-	if (!m_Local || !m_Local.IsInValidTeam())
+	if (!_Local || !_Local.IsInValidTeam())
 		return;
+
+	m_Local = _Local;
 
 	for (int n = 1; n < 32; n++)
 	{
@@ -32,7 +34,10 @@ void CEntityCache::Fill()
 	}
 }
 
-void CEntityCache::Clear() {
+void CEntityCache::Clear()
+{
+	m_Local = 0x0;
+
 	for (auto &Group : m_Groups)
 		Group.second.clear();
 }
