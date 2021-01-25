@@ -40,6 +40,9 @@ void CAimbot::Run()
 {
 	if (const auto &Local = g_EntityCache.m_Local)
 	{
+		if (!Local.IsAlive())
+			return;
+
 		Target_t Target = {};
 
 		if (GetTarget(Local, Target) && GetAsyncKeyState(VK_SHIFT)) {
