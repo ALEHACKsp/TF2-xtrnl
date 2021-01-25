@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+*.iobj
+*.ipdb
+*.pdb
+*.recipe
+*.log
+*.tlog
+*.lastbuildstate
+*.tlog
+TF2-xtrnl/x64/Release/TF2-xtrnl.tlog/unsuccessfulbuild
+*.pdb
