@@ -40,3 +40,6 @@
 *.tlog
 TF2-xtrnl/x64/Release/TF2-xtrnl.tlog/unsuccessfulbuild
 *.pdb
+*.ipch
+*.db
+.vs/TF2-xtrnl/v16/.suo
