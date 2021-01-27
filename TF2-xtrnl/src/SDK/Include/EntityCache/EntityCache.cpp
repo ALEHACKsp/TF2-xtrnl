@@ -10,6 +10,8 @@ void CEntityCache::Fill()
 
 	m_Local = _Local;
 
+	int nLocalTeam = m_Local.GetTeamNum();
+
 	for (int n = 1; n < g_Client.GetHighestEntityIndex(); n++)
 	{
 		CEntity Entity = g_EntityList.GetEntity(n);
@@ -21,7 +23,7 @@ void CEntityCache::Fill()
 		{
 			case CTFPlayer: {
 				m_Groups[EGroupType::PLAYERS_ALL].push_back(Entity);
-				m_Groups[Entity.GetTeamNum() != m_Local.GetTeamNum() ? EGroupType::PLAYERS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
+				m_Groups[Entity.GetTeamNum() != nLocalTeam ? EGroupType::PLAYERS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
 				break;
 			}
 
@@ -29,7 +31,7 @@ void CEntityCache::Fill()
 			case CObjectDispenser:
 			case CObjectTeleporter: {
 				m_Groups[EGroupType::BUILDINGS_ALL].push_back(Entity);
-				m_Groups[Entity.GetTeamNum() != m_Local.GetTeamNum() ? EGroupType::BUILDINGS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
+				m_Groups[Entity.GetTeamNum() != nLocalTeam ? EGroupType::BUILDINGS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
 				break;
 			}
 			

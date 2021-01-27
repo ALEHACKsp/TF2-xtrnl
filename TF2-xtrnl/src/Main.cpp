@@ -18,9 +18,9 @@ int main()
 		{
 			g_EntityCache.Fill();
 			{
-				g_AutoJump.Run();
-				g_Glow.Run();
 				g_Aimbot.Run();
+				g_Glow.Run();
+				g_AutoJump.Run();
 			}
 			g_EntityCache.Clear();
 		}

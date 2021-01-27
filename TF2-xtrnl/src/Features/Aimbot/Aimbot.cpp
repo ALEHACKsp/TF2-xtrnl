@@ -5,6 +5,10 @@ bool CAimbot::GetTargets(const CEntity &Local)
 {
 	m_vecTargets.clear();
 
+	Vector vViewAngles = g_Engine.GetViewAngles();
+	Vector vLocalEyePos = Local.GetEyePosition();
+	Vector vLocalOrigin = Local.GetOrigin();
+
 	if (Vars::Aimbot::AimPlayers)
 	{
 		for (const auto &Player : g_EntityCache.GetGroup(EGroupType::PLAYERS_ENEMIES))
@@ -13,9 +17,9 @@ bool CAimbot::GetTargets(const CEntity &Local)
 				continue;
 
 			Vector vPos = GetAimPosition(Player, true);
-			Vector vAngleTo = Math::CalcAngle(Local.GetEyePosition(), vPos);
-			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(g_Engine.GetViewAngles(), vAngleTo) : 0.0f;
-			float flDistTo = Vars::Aimbot::SortMethod == 1 ? Local.GetOrigin().DistTo(vPos) : 0.0f;
+			Vector vAngleTo = Math::CalcAngle(vLocalEyePos, vPos);
+			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(vViewAngles, vAngleTo) : 0.0f;
+			float flDistTo = Vars::Aimbot::SortMethod == 1 ? vLocalOrigin.DistTo(vPos) : 0.0f;
 
 			if (Vars::Aimbot::SortMethod == 0 && flFOVTo > Vars::Aimbot::AimFOV)
 				continue;
@@ -32,9 +36,9 @@ bool CAimbot::GetTargets(const CEntity &Local)
 				continue;
 
 			Vector vPos = GetAimPosition(Building, false);
-			Vector vAngleTo = Math::CalcAngle(Local.GetEyePosition(), vPos);
-			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(g_Engine.GetViewAngles(), vAngleTo) : 0.0f;
-			float flDistTo = Vars::Aimbot::SortMethod == 1 ? Local.GetOrigin().DistTo(vPos) : 0.0f;
+			Vector vAngleTo = Math::CalcAngle(vLocalEyePos, vPos);
+			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(vViewAngles, vAngleTo) : 0.0f;
+			float flDistTo = Vars::Aimbot::SortMethod == 1 ? vLocalOrigin.DistTo(vPos) : 0.0f;
 
 			if (Vars::Aimbot::SortMethod == 0 && flFOVTo > Vars::Aimbot::AimFOV)
 				continue;

@@ -26,6 +26,8 @@ namespace Offsets
 	OFFSET(m_dwBoneMatrix, 0x5B0); //https://www.unknowncheats.me/forum/2755174-post265.html :shrug: thanks!
 	OFFSET(m_iClass, 0x154C);
 	OFFSET(m_bDormant, 0x1AA);
+	OFFSET(m_iObserverMode, 0x109C);
+	OFFSET(m_hActiveWeapon, 0xDB8);
 }
 
 #undef OFFSET

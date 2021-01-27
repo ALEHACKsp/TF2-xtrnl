@@ -28,4 +28,6 @@ public:
 	Vector GetBonePos(int nBoneIndex) const;
 	bool IsDormant() const;
 	bool IsTeleporter() const;
+	int GetObserverMode() const;
+	int GetActiveWeapon() const;
 };

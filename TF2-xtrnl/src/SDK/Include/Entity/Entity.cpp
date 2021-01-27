@@ -1,7 +1,7 @@
 #include "Entity.h"
 
 CEntity::operator bool() const {
-	return m_dwThis;
+	return m_dwThis != 0x0;
 }
 
 CEntity::CEntity(const DWORD &dwAddress) {
@@ -87,25 +87,26 @@ DWORD CEntity::GetBoneMatrix() const {
 
 Vector CEntity::GetBonePos(int nBoneIndex) const
 {
-	if (const auto &BoneMatrix = GetBoneMatrix())
-	{
-		return
-		{
-			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x0C),
-			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x1C),
-			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x2C)
-		};
-	}
+	VMatrix BoneMatrix = Utils::Read<VMatrix>(Utils::Read<DWORD>(m_dwThis + Offsets::m_dwBoneMatrix) + nBoneIndex * 0x30);
+	
+	if (const auto &BM = BoneMatrix.As3x4())
+		return Vector(BM[0][3], BM[1][3], BM[2][3]);
 
 	return Vector();
 }
 
-bool CEntity::IsDormant() const
-{
+bool CEntity::IsDormant() const {
 	return Utils::Read<bool>(m_dwThis + Offsets::m_bDormant); //m_iTeamNum + 0xFA
 }
 
-bool CEntity::IsTeleporter() const
-{
+bool CEntity::IsTeleporter() const {
 	return GetClassID() == CObjectTeleporter;
+}
+
+int CEntity::GetObserverMode() const {
+	return Utils::Read<int>(m_dwThis + Offsets::m_iObserverMode);
+}
+
+int CEntity::GetActiveWeapon() const {
+	return Utils::Read<int>(m_dwThis + Offsets::m_hActiveWeapon);
 }

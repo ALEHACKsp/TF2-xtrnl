@@ -3,6 +3,18 @@
 #include <map>
 #include <vector>
 
+using matrix3x4 = float[3][4];
+
+class VMatrix {
+private:
+	Vector m[4][4];
+
+public:
+	inline const matrix3x4 &As3x4() const {
+		return *((const matrix3x4 *)this);
+	}
+};
+
 enum ETFClass
 {
 	CLASS_NONE,
@@ -504,4 +516,15 @@ enum ETFTeam
 	TEAM_SPECTATOR = 1,
 	TEAM_RED = 2,
 	TEAM_BLU = 3
+};
+
+enum EObserverModes
+{
+	OBS_MODE_NONE = 0,
+	OBS_MODE_DEATHCAM,
+	OBS_MODE_FREEZECAM,
+	OBS_MODE_FIXED,
+	OBS_MODE_FIRSTPERSON,
+	OBS_MODE_THIRDPERSON,
+	OBS_MODE_ROAMING,
 };
