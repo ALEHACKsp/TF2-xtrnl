@@ -2,7 +2,6 @@
 
 int main()
 {
-	SetConsoleTitle(L"TF2-xtrnl");
 	g_Process.Init();
 	
 	while (!Offsets::dwClient)
@@ -13,15 +12,23 @@ int main()
 
 	while (!GetAsyncKeyState(VK_F11))
 	{
-		g_EntityCache.Fill();		
+		g_Menu.Run();
+
+		if (Utils::IsGameWindowFocused())
 		{
-			g_AutoJump.Run();
-			g_Glow.Run();
-			g_Aimbot.Run();
+			g_EntityCache.Fill();
+			{
+				g_AutoJump.Run();
+				g_Glow.Run();
+				g_Aimbot.Run();
+			}
+			g_EntityCache.Clear();
 		}
-		g_EntityCache.Clear();
+
+		std::this_thread::sleep_for(std::chrono::microseconds(500));
 	}
 
 	g_Process.Free();
+
 	return 0;
 }

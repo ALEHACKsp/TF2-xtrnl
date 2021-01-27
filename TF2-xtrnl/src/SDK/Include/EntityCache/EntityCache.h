@@ -1,9 +1,9 @@
 #pragma once
 #include "../EntityList/EntityList.h"
 
-enum struct EGroupType
-{
-	PLAYERS_ALL, PLAYERS_ENEMIES, PLAYERS_TEAMMATES
+enum struct EGroupType {
+	PLAYERS_ALL, PLAYERS_ENEMIES, PLAYERS_TEAMMATES,
+	BUILDINGS_ALL, BUILDINGS_ENEMIES, BUILDINGS_TEAMMATES
 };
 
 class CEntityCache

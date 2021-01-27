@@ -24,6 +24,10 @@ int CEntity::GetTeamNum() const {
 	return Utils::Read<int>(m_dwThis + Offsets::m_iTeamNum);
 }
 
+int CEntity::GetClassNum() const {
+	return Utils::Read<int>(m_dwThis + Offsets::m_iClass);
+}
+
 byte CEntity::GetLifeState() const {
 	return Utils::Read<byte>(m_dwThis + Offsets::m_lifeState);
 }
@@ -75,4 +79,33 @@ Vector CEntity::GetViewOffset() const {
 
 Vector CEntity::GetEyePosition() const {
 	return GetOrigin() + GetViewOffset();
+}
+
+DWORD CEntity::GetBoneMatrix() const {
+	return Utils::Read<DWORD>(m_dwThis + Offsets::m_dwBoneMatrix);
+}
+
+Vector CEntity::GetBonePos(int nBoneIndex) const
+{
+	if (const auto &BoneMatrix = GetBoneMatrix())
+	{
+		return
+		{
+			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x0C),
+			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x1C),
+			Utils::Read<float>(BoneMatrix + (0x30 * nBoneIndex) + 0x2C)
+		};
+	}
+
+	return Vector();
+}
+
+bool CEntity::IsDormant() const
+{
+	return Utils::Read<bool>(m_dwThis + Offsets::m_bDormant); //m_iTeamNum + 0xFA
+}
+
+bool CEntity::IsTeleporter() const
+{
+	return GetClassID() == CObjectTeleporter;
 }

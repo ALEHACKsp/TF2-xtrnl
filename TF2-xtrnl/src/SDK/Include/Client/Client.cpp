@@ -23,3 +23,7 @@ void CClient::SetAttack(int nTo) {
 void CClient::SetAttack2(int nTo) {
 	Utils::Write<int>(Offsets::dwClient + Offsets::dwAttack2, nTo);
 }
+
+int CClient::GetHighestEntityIndex() const {
+	return Utils::Read<int>(Offsets::dwClient + Offsets::dwHighestEntityIndex);
+}

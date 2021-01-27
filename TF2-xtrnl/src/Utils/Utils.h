@@ -4,6 +4,7 @@
 #include "Color/Color.h"
 
 #include <chrono>
+#include <thread>
 
 namespace Utils
 {
@@ -38,18 +39,13 @@ namespace Utils
 		return 0x0;
 	}
 
-	inline Color_t Rainbow()
+	inline bool IsGameWindowFocused()
 	{
-		static auto start = std::chrono::steady_clock::now();
-		auto end = std::chrono::steady_clock::now();
-		float flElapsed = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) / 300.0f;
+		static HWND hwTF2 = 0;
 
-		return
-		{
-			static_cast<byte>(floor(sin(flElapsed + 0.0f) * 127.0f + 128.0f)),
-			static_cast<byte>(floor(sin(flElapsed + 2.0f) * 127.0f + 128.0f)),
-			static_cast<byte>(floor(sin(flElapsed + 4.0f) * 127.0f + 128.0f)),
-			255
-		};
-	};
+		while (!hwTF2)
+			hwTF2 = FindWindowW(0, L"Team Fortress 2");
+
+		return (GetForegroundWindow() == hwTF2);
+	}
 }

@@ -9,6 +9,9 @@
 #include <cmath>
 #include <algorithm>
 
+#undef min
+#undef max
+
 namespace Math
 {
 	inline void SinCos(float radians, float *sine, float *cosine)

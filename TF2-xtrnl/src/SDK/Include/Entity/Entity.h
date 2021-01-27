@@ -13,6 +13,7 @@ public:
 	int GetFlags() const;
 	int GetHealth() const;
 	int GetTeamNum() const;
+	int GetClassNum() const;
 	byte GetLifeState() const;
 	int GetClassID() const;
 	bool IsAlive() const;
@@ -23,4 +24,8 @@ public:
 	Vector GetOrigin() const;
 	Vector GetViewOffset() const;
 	Vector GetEyePosition() const;
+	DWORD GetBoneMatrix() const;
+	Vector GetBonePos(int nBoneIndex) const;
+	bool IsDormant() const;
+	bool IsTeleporter() const;
 };

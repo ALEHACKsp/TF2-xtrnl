@@ -1,18 +1,23 @@
 #include "Glow.h"
+#include "../Vars.h"
 
 void CGlow::Run()
 {
+	if (!Vars::Glow::Active)
+		return;
+
 	if (const auto &Local = g_EntityCache.m_Local)
 	{
-		for (const auto &Enemy : g_EntityCache.GetGroup(EGroupType::PLAYERS_ENEMIES))
-			Utils::Write<std::pair<bool, bool>>(Enemy.GetThis() + 0xDBD, { true, false });
+		if (Vars::Glow::GlowPlayers)
+		{
+			for (const auto &Player : g_EntityCache.GetGroup(EGroupType::PLAYERS_ENEMIES))
+				Utils::Write<std::pair<bool, bool>>(Player.GetThis() + 0xDBD, { true, false });
+		}
 
-		DWORD dwGlowObjectManager = Utils::Read<DWORD>(Offsets::dwClient + Offsets::dwGlowObjectManager);
-		int nGlowObjectCount = Utils::Read<int>((Offsets::dwClient + Offsets::dwGlowObjectManager + 0xC));
-		Color_t Rainbow = Utils::Rainbow();
-		Vector vColor = { Color::TOFLOAT(Rainbow.r), Color::TOFLOAT(Rainbow.g), Color::TOFLOAT(Rainbow.b) };
-
-		for (int n = 0; n < nGlowObjectCount; n++)
-			Utils::Write<GlowSettings_t>((dwGlowObjectManager + (n * 32) + 4), { vColor, 1.0f, true, false });
+		if (Vars::Glow::GlowBuildings)
+		{
+			for (const auto &Building : g_EntityCache.GetGroup(EGroupType::BUILDINGS_ENEMIES))
+				Utils::Write<std::pair<bool, bool>>(Building.GetThis() + 0xDBD, { true, false });
+		}
 	}
 }

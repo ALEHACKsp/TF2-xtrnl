@@ -10,6 +10,7 @@ public:
 	void SetJump(int nTo);
 	void SetAttack(int nTo);
 	void SetAttack2(int nTo);
+	int GetHighestEntityIndex() const;
 };
 
 inline CClient g_Client;

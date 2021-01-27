@@ -10,25 +10,29 @@ void CEntityCache::Fill()
 
 	m_Local = _Local;
 
-	for (int n = 1; n < 32; n++)
+	for (int n = 1; n < g_Client.GetHighestEntityIndex(); n++)
 	{
 		CEntity Entity = g_EntityList.GetEntity(n);
 
-		if (!Entity)
+		if (!Entity || Entity.IsDormant())
 			continue;
 
 		switch (Entity.GetClassID())
 		{
-			case CTFPlayer:
-			{
-				if (!Entity.IsInValidTeam())
-					continue;
-
+			case CTFPlayer: {
 				m_Groups[EGroupType::PLAYERS_ALL].push_back(Entity);
 				m_Groups[Entity.GetTeamNum() != m_Local.GetTeamNum() ? EGroupType::PLAYERS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
 				break;
 			}
 
+			case CObjectSentrygun:
+			case CObjectDispenser:
+			case CObjectTeleporter: {
+				m_Groups[EGroupType::BUILDINGS_ALL].push_back(Entity);
+				m_Groups[Entity.GetTeamNum() != m_Local.GetTeamNum() ? EGroupType::BUILDINGS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
+				break;
+			}
+			
 			default: break;
 		}
 	}

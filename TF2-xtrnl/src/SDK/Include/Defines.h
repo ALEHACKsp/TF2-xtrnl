@@ -486,7 +486,7 @@ enum ETFLifeStates
 	LIFE_DISCARDBODY
 };
 
-enum ETFPlayerFlags
+enum ETFEntityFlags
 {
 	FL_ONGROUND = (1 << 0),
 	FL_DUCKING = (1 << 1),

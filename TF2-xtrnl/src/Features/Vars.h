@@ -1,0 +1,35 @@
+#pragma once
+#include <Windows.h>
+
+#define VAR(name, value) inline auto name = value
+
+namespace Vars
+{
+	namespace Aimbot
+	{
+		VAR(Active, true);
+		VAR(AutoShoot, true);
+		VAR(AimPlayers, true);
+		VAR(AimBuildings, true);
+		VAR(AimKey, VK_LSHIFT);
+		VAR(AimMethod, 0); //0 Normal, 1 Smooth
+		VAR(SortMethod, 0); //0 FOV, 1 Distance
+		VAR(AimPosition, 0); //0 Body, 1 Head
+		VAR(AimFOV, 15.0f);
+		VAR(Smoothing, 1.0f);
+	}
+
+	namespace Glow
+	{
+		VAR(Active, false);
+		VAR(GlowPlayers, true);
+		VAR(GlowBuildings, true);
+	}
+
+	namespace Misc
+	{
+		VAR(AutoJump, true);
+	}
+}
+
+#undef VAR
