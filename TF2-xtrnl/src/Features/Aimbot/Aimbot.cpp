@@ -134,7 +134,7 @@ Vector CAimbot::GetAimPosition(const CEntity &Entity, bool bIsPlayer)
 			return vPos + Vector(0.0f, 0.0f, flZOffset);
 		}
 		
-		return Entity.GetBonePos(0);
+		return Entity.GetOrigin() + Vector(0.0f, 0.0f, 45.0f);
 	}
 
 	return Entity.GetOrigin() + Vector(0.0f, 0.0f, Entity.IsTeleporter() ? 0.0f : 25.0f);
@@ -166,18 +166,18 @@ void CAimbot::Run()
 {
 	if (!Vars::Aimbot::Active)
 		return;
-
+	
 	if (const auto &Local = g_EntityCache.m_Local)
 	{
 		if (!Local.IsAlive())
 			return;
-
+		
 		Target_t Target = {};
-
+		
 		auto IsKeyDown = [&]() -> bool {
 			return !Vars::Aimbot::AimKey ? true : GetAsyncKeyState(Vars::Aimbot::AimKey);
 		};
-
+		
 		if (GetTarget(Local, Target) && IsKeyDown())
 		{
 			Aim(Target.m_vAngleTo);

@@ -8,6 +8,7 @@ private:
 
 public:
 	operator bool() const;
+	bool operator== (const CEntity &other);
 	CEntity(const DWORD &dwAddress);
 	DWORD GetThis() const;
 	int GetFlags() const;

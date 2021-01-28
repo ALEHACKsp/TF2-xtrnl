@@ -4,6 +4,10 @@ CEntity::operator bool() const {
 	return m_dwThis != 0x0;
 }
 
+bool CEntity::operator==(const CEntity &other) {
+	return m_dwThis == other.GetThis();
+}
+
 CEntity::CEntity(const DWORD &dwAddress) {
 	m_dwThis = dwAddress;
 }
