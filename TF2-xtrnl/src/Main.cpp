@@ -14,16 +14,16 @@ int main()
 	{
 		g_Menu.Run();
 
-		if (Utils::IsGameWindowFocused())
+		g_EntityCache.Fill();
 		{
-			g_EntityCache.Fill();
-			{
+			if (Utils::IsGameWindowFocused()) {
 				g_Aimbot.Run();
-				g_Glow.Run();
 				g_AutoJump.Run();
 			}
-			g_EntityCache.Clear();
+
+			g_Glow.Run();
 		}
+		g_EntityCache.Clear();
 
 		std::this_thread::sleep_for(std::chrono::microseconds(500));
 	}

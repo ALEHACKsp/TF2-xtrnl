@@ -13,9 +13,6 @@ bool CAimbot::GetTargets(const CEntity &Local)
 	{
 		for (const auto &Player : g_EntityCache.GetGroup(EGroupType::PLAYERS_ENEMIES))
 		{
-			if (!Player.IsAlive())
-				continue;
-
 			Vector vPos = GetAimPosition(Player, true);
 			Vector vAngleTo = Math::CalcAngle(vLocalEyePos, vPos);
 			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(vViewAngles, vAngleTo) : 0.0f;
@@ -32,9 +29,6 @@ bool CAimbot::GetTargets(const CEntity &Local)
 	{
 		for (const auto &Building : g_EntityCache.GetGroup(EGroupType::BUILDINGS_ENEMIES))
 		{
-			if (!Building.IsAlive())
-				continue;
-
 			Vector vPos = GetAimPosition(Building, false);
 			Vector vAngleTo = Math::CalcAngle(vLocalEyePos, vPos);
 			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(vViewAngles, vAngleTo) : 0.0f;

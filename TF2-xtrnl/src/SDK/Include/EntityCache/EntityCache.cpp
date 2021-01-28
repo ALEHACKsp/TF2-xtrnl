@@ -16,12 +16,16 @@ void CEntityCache::Fill()
 	{
 		CEntity Entity = g_EntityList.GetEntity(n);
 
-		if (!Entity || Entity.IsDormant())
+		if (!Entity || Entity.GetThis() == m_Local.GetThis())
 			continue;
 
 		switch (Entity.GetClassID())
 		{
-			case CTFPlayer: {
+			case CTFPlayer:
+			{
+				if (!Entity.IsAlive() || Entity.IsDormant())
+					continue;
+
 				m_Groups[EGroupType::PLAYERS_ALL].push_back(Entity);
 				m_Groups[Entity.GetTeamNum() != nLocalTeam ? EGroupType::PLAYERS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
 				break;
@@ -29,7 +33,11 @@ void CEntityCache::Fill()
 
 			case CObjectSentrygun:
 			case CObjectDispenser:
-			case CObjectTeleporter: {
+			case CObjectTeleporter:
+			{
+				if (!Entity.IsAlive() || Entity.IsDormant())
+					continue;
+
 				m_Groups[EGroupType::BUILDINGS_ALL].push_back(Entity);
 				m_Groups[Entity.GetTeamNum() != nLocalTeam ? EGroupType::BUILDINGS_ENEMIES : EGroupType::PLAYERS_TEAMMATES].push_back(Entity);
 				break;
