@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Features\Aimbot\Aimbot.cpp" />
+    <ClCompile Include="src\Features\AutoBackstab\AutoBackstab.cpp" />
     <ClCompile Include="src\Features\AutoJump\AutoJump.cpp" />
     <ClCompile Include="src\Features\Glow\Glow.cpp" />
     <ClCompile Include="src\Features\Menu\Console\Console.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Features\Aimbot\Aimbot.h" />
+    <ClInclude Include="src\Features\AutoBackstab\AutoBackstab.h" />
     <ClInclude Include="src\Features\AutoJump\AutoJump.h" />
     <ClInclude Include="src\Features\Features.h" />
     <ClInclude Include="src\Features\Glow\Glow.h" />

@@ -114,3 +114,27 @@ int CEntity::GetObserverMode() const {
 int CEntity::GetActiveWeapon() const {
 	return Utils::Read<int>(m_dwThis + Offsets::m_hActiveWeapon);
 }
+
+bool CEntity::IsGlowEnabled() const {
+	return Utils::Read<bool>(m_dwThis + Offsets::m_bGlowEnabled);
+}
+
+void CEntity::SetGlowEnabled(bool bEnabled) const {
+	Utils::Write<std::pair<bool, bool>>(GetThis() + Offsets::m_bGlowEnabled, { bEnabled, !bEnabled });
+}
+
+bool CEntity::IsReadyToBackstab() const {
+	return Utils::Read<bool>(m_dwThis + Offsets::m_bReadyToBackstab);
+}
+
+int CEntity::GetItemDefinitionIndex() const {
+	return Utils::Read<int>(m_dwThis + Offsets::m_AttributeManager + Offsets::m_Item + Offsets::m_iItemDefinitionIndex);
+}
+
+int CEntity::GetCond() const {
+	return Utils::Read<int>(m_dwThis + Offsets::m_nPlayerCond);
+}
+
+bool CEntity::IsScoped() const {
+	return GetCond() & TFCond_Zoomed;
+}

@@ -14,6 +14,7 @@
     <ClCompile Include="src\Features\Menu\Console\Console.cpp" />
     <ClCompile Include="src\Features\Menu\Menu.cpp" />
     <ClCompile Include="src\Features\Menu\Input\Input.cpp" />
+    <ClCompile Include="src\Features\AutoBackstab\AutoBackstab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Features\AutoJump\AutoJump.h" />
@@ -37,5 +38,6 @@
     <ClInclude Include="src\Features\Menu\Menu.h" />
     <ClInclude Include="src\Features\Vars.h" />
     <ClInclude Include="src\Features\Menu\Input\Input.h" />
+    <ClInclude Include="src\Features\AutoBackstab\AutoBackstab.h" />
   </ItemGroup>
 </Project>

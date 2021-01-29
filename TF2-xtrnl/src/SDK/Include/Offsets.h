@@ -28,6 +28,12 @@ namespace Offsets
 	OFFSET(m_bDormant, 0x1AA);
 	OFFSET(m_iObserverMode, 0x109C);
 	OFFSET(m_hActiveWeapon, 0xDB8);
+	OFFSET(m_bGlowEnabled, 0xDBD);
+	OFFSET(m_bReadyToBackstab, 0xC64);
+	OFFSET(m_AttributeManager, 0x8B8);
+	OFFSET(m_Item, 0x918);
+	OFFSET(m_iItemDefinitionIndex, 0x84);
+	OFFSET(m_nPlayerCond, 0x18BC);
 }
 
 #undef OFFSET

@@ -19,6 +19,7 @@ int main()
 			if (Utils::IsGameWindowFocused()) {
 				g_Aimbot.Run();
 				g_AutoJump.Run();
+				g_AutoBackstab.Run();
 			}
 
 			g_Glow.Run();

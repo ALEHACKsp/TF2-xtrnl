@@ -7,7 +7,7 @@ private:
 	DWORD m_dwThis;
 
 public:
-	operator bool() const;
+	explicit operator bool() const;
 	bool operator== (const CEntity &other);
 	CEntity(const DWORD &dwAddress);
 	DWORD GetThis() const;
@@ -31,4 +31,10 @@ public:
 	bool IsTeleporter() const;
 	int GetObserverMode() const;
 	int GetActiveWeapon() const;
+	bool IsGlowEnabled() const;
+	void SetGlowEnabled(bool bEnabled) const;
+	bool IsReadyToBackstab() const;
+	int GetItemDefinitionIndex() const;
+	int GetCond() const;
+	bool IsScoped() const;
 };

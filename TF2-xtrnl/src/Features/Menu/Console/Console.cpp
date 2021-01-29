@@ -13,6 +13,9 @@ void CConsole::Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wcha
 	m_nScreenWidth = nWidth;
 	m_nScreenHeight = nHeight;
 
+	m_nFontWidth = nFontWidth;
+	m_nFontHeight = nFontHeight;
+
 	HWND hwConsole = GetConsoleWindow();
 	SetWindowLong(hwConsole, GWL_STYLE, GetWindowLong(hwConsole, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX);
 
@@ -36,7 +39,7 @@ void CConsole::Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wcha
 	CFI.dwFontSize.X = nFontWidth;
 	CFI.dwFontSize.Y = nFontHeight;
 	CFI.FontFamily = FF_DONTCARE;
-	CFI.FontWeight = 0;
+	CFI.FontWeight = 400;
 
 	wcscpy_s(CFI.FaceName, wszFont);
 	SetCurrentConsoleFontEx(m_hConsoleOut, false, &CFI);
@@ -96,26 +99,13 @@ void CConsole::Fill(int x1, int y1, int x2, int y2, short col)
 
 POINT CConsole::GetMousePos()
 {
-	INPUT_RECORD InputRecord = {};
-	DWORD dwEvents = 0x0;
-
-	ReadConsoleInputW(m_hConsoleIn, &InputRecord, 1, &dwEvents);
-
-	switch (InputRecord.EventType)
-	{
-		case MOUSE_EVENT:
-		{
-			return
-			{
-				InputRecord.Event.MouseEvent.dwMousePosition.X,
-				InputRecord.Event.MouseEvent.dwMousePosition.Y
-			};
-		}
-
-		default: break;
-	}
-
-	return {};
+	static HWND hwConsole = GetConsoleWindow();
+	POINT p = {};
+	GetCursorPos(&p);
+	ScreenToClient(hwConsole, &p);
+	p.x /= (m_nFontWidth - 1);
+	p.y /= m_nFontHeight;
+	return p;
 }
 
 bool CConsole::IsInFocus()

@@ -10,7 +10,7 @@ namespace Color
 		return (static_cast<float>(x) / 255.0f);
 	}
 
-	inline Vector TOVEC3(const Color_t &x) {
+	inline Vector TOVEC(const Color_t &x) {
 		return Vector(TOFLOAT(x.r), TOFLOAT(x.g), TOFLOAT(x.b));
 	}
 

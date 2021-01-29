@@ -1,14 +1,20 @@
 #include "Menu.h"
 #include "Input/Input.h"
 #include "../Vars.h"
+#include <sstream>
+#include <iomanip>
 
 #pragma warning (disable : 4018)
+
+void CMenu::SetCursor(int x, int y) {
+	m_nCursorX = x; m_nCursorY = y;
+}
 
 bool CMenu::InputBool(const std::wstring &wszName, bool &b)
 {
 	bool callback = false;
-	int x = m_nLastItemX;
-	int y = m_nLastItemY;
+	int x = m_nCursorX;
+	int y = m_nCursorY;
 	std::wstring name = std::wstring(wszName + L": " + (b ? L"On" : L"Off"));
 
 	short color = FG_WHITE;
@@ -25,16 +31,16 @@ bool CMenu::InputBool(const std::wstring &wszName, bool &b)
 
 	g_Console.DrawString(x, y, name, color);
 
-	m_nLastItemX = x;
-	m_nLastItemY = y + 1;
+	m_nCursorX = x;
+	m_nCursorY = y + 1;
 	return callback;
 }
 
 bool CMenu::InputInt(const std::wstring &wszName, int &n, int nMin, int nMax, int nStep)
 {
 	bool callback = false;
-	int x = m_nLastItemX;
-	int y = m_nLastItemY;
+	int x = m_nCursorX;
+	int y = m_nCursorY;
 	std::wstring name = std::wstring(wszName + L": " + std::to_wstring(n).c_str());
 
 	short color = FG_WHITE;
@@ -66,17 +72,24 @@ bool CMenu::InputInt(const std::wstring &wszName, int &n, int nMin, int nMax, in
 
 	g_Console.DrawString(x, y, name, color);
 
-	m_nLastItemX = x;
-	m_nLastItemY = y + 1;
+	m_nCursorX = x;
+	m_nCursorY = y + 1;
 	return callback;
 }
 
-bool CMenu::InputFloat(const std::wstring &wszName, float &f, float flMin, float flMax, float flStep)
+bool CMenu::InputFloat(const std::wstring &wszName, float &f, float flMin, float flMax, float flStep, int nPrecision)
 {
+	auto val = [&]() -> std::wstring {
+		std::wstringstream ss = {};
+		ss << std::fixed << std::setprecision(nPrecision) << f;
+		return ss.str();
+	};
+
 	bool callback = false;
-	int x = m_nLastItemX;
-	int y = m_nLastItemY;
-	std::wstring name = std::wstring(wszName + L": " + std::to_wstring(f).c_str());
+	int x = m_nCursorX;
+	int y = m_nCursorY;
+	
+	std::wstring name = std::wstring(wszName + L": " + val());
 
 	short color = FG_WHITE;
 
@@ -107,8 +120,8 @@ bool CMenu::InputFloat(const std::wstring &wszName, float &f, float flMin, float
 
 	g_Console.DrawString(x, y, name, color);
 
-	m_nLastItemX = x;
-	m_nLastItemY = y + 1;
+	m_nCursorX = x;
+	m_nCursorY = y + 1;
 	return callback;
 }
 
@@ -143,8 +156,8 @@ bool CMenu::InputCombo(const std::wstring &wszName, int &n, const std::vector<st
 	}
 
 	bool callback = false;
-	int x = m_nLastItemX;
-	int y = m_nLastItemY;
+	int x = m_nCursorX;
+	int y = m_nCursorY;
 	std::wstring name = std::wstring(wszName + L": " + FindCurItemName());
 
 	short color = FG_WHITE;
@@ -162,16 +175,16 @@ bool CMenu::InputCombo(const std::wstring &wszName, int &n, const std::vector<st
 
 	g_Console.DrawString(x, y, name, color);
 
-	m_nLastItemX = x;
-	m_nLastItemY = y + 1;
+	m_nCursorX = x;
+	m_nCursorY = y + 1;
 	return callback;
 }
 
 bool CMenu::Button(const std::wstring &wszName, bool bActive)
 {
 	bool callback = false;
-	int x = m_nLastItemX;
-	int y = m_nLastItemY;
+	int x = m_nCursorX;
+	int y = m_nCursorY;
 
 	short color = FG_WHITE;
 
@@ -188,8 +201,8 @@ bool CMenu::Button(const std::wstring &wszName, bool bActive)
 
 	g_Console.DrawString(x, y, wszName, color);
 
-	m_nLastItemX = x;
-	m_nLastItemY = y + 1;
+	m_nCursorX = x;
+	m_nCursorY = y + 1;
 	return callback;
 }
 
@@ -213,8 +226,7 @@ void CMenu::Run()
 			m_nMouseY = mouse.y;
 		}
 
-		m_nLastItemX = 1;
-		m_nLastItemY = 1;
+		SetCursor(1, 1);
 
 		enum struct ETabs { AIMBOT, GLOW, MISC };
 		static ETabs Tab = ETabs::AIMBOT;
@@ -228,8 +240,7 @@ void CMenu::Run()
 		if (Button(L"Misc", Tab == ETabs::MISC))
 			Tab = ETabs::MISC;
 
-		m_nLastItemX = 10;
-		m_nLastItemY = 1;
+		SetCursor(10, 1);
 
 		switch (Tab)
 		{
@@ -242,23 +253,22 @@ void CMenu::Run()
 				InputCombo(L"Aim Key", Vars::Aimbot::AimKey, { { L"None", 0 }, { L"LShift", VK_LSHIFT }, { L"LButton", VK_LBUTTON } });
 				InputCombo(L"Aim Method", Vars::Aimbot::AimMethod, { { L"Normal", 0 }, { L"Smooth", 1 } });
 				InputCombo(L"Sort Method", Vars::Aimbot::SortMethod, { { L"FOV", 0 }, { L"Distance", 1 } });
-				InputCombo(L"Aim Position", Vars::Aimbot::AimPosition, { { L"Body", 0 }, { L"Head", 1 } });
+				InputCombo(L"Aim Position", Vars::Aimbot::AimPosition, { { L"Body", 0 }, { L"Head", 1 }, { L"Auto", 2 } });
 				InputFloat(L"Aim FOV", Vars::Aimbot::AimFOV, 1.0f, 180.0f);
-				InputFloat(L"Aim Smoothing", Vars::Aimbot::Smoothing, 1.0f, 3.0f);
+				InputFloat(L"Aim Smoothing", Vars::Aimbot::Smoothing, 0.5f, 5.0f, 0.5f, 1);
 				break;
 			}
 
 			case ETabs::GLOW:
 			{
 				InputBool(L"Active", Vars::Glow::Active);
-				InputBool(L"Glow Players", Vars::Glow::GlowPlayers);
-				InputBool(L"Glow Buildings", Vars::Glow::GlowBuildings);
 				break;
 			}
 
 			case ETabs::MISC:
 			{
 				InputBool(L"Auto Jump", Vars::Misc::AutoJump);
+				InputBool(L"Auto Backstab", Vars::Misc::AutoBackstab);
 				break;
 			}
 		}

@@ -1,6 +1,10 @@
 #include "Aimbot.h"
 #include "../Vars.h"
 
+bool CAimbot::IsKeyDown() {
+	return !Vars::Aimbot::AimKey ? true : (GetAsyncKeyState(Vars::Aimbot::AimKey) & 0x8000);
+}
+
 bool CAimbot::GetTargets(const CEntity &Local)
 {
 	m_vecTargets.clear();
@@ -14,6 +18,13 @@ bool CAimbot::GetTargets(const CEntity &Local)
 		for (const auto &Player : g_EntityCache.GetGroup(EGroupType::PLAYERS_ENEMIES))
 		{
 			Vector vPos = GetAimPosition(Player, true);
+
+			//took a while to realize this, it almost drove me crazy
+			//it used to aim at "dead players" (and if glow was enabled it would fix itself SMH)
+			//then I found out that it was GetBonePos and that this is one way to fix it
+			if (vPos.DistTo(Player.GetOrigin()) > 100.0f)
+				continue;
+
 			Vector vAngleTo = Math::CalcAngle(vLocalEyePos, vPos);
 			float flFOVTo = Vars::Aimbot::SortMethod == 0 ? Math::CalcFov(vViewAngles, vAngleTo) : 0.0f;
 			float flDistTo = Vars::Aimbot::SortMethod == 1 ? vLocalOrigin.DistTo(vPos) : 0.0f;
@@ -67,77 +78,58 @@ Vector CAimbot::GetAimPosition(const CEntity &Entity, bool bIsPlayer)
 {
 	if (bIsPlayer)
 	{
-		if (Vars::Aimbot::AimPosition == 1)
+		auto GetHeadPos = [&]() -> Vector
 		{
-			Vector vPos = {};
-			float flZOffset = 0.0f;
-
-			switch (Entity.GetClassNum()) //yup... we gaming
+			switch (Entity.GetClassNum())
 			{
-				case CLASS_SCOUT: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 5.0f;
-					break;
-				}
-
-				case CLASS_SOLDIER: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 5.0f;
-					break;
-				}
-
-				case CLASS_PYRO: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 5.0f;
-					break;
-				}
-
-				case CLASS_DEMOMAN: {
-					vPos = Entity.GetBonePos(16);
-					flZOffset = 4.0f;
-					break;
-				}
-
-				case CLASS_HEAVY: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 4.0f;
-					break;
-				}
-
-				case CLASS_ENGINEER: {
-					vPos = Entity.GetBonePos(8);
-					flZOffset = 4.0f;
-					break;
-				}
-
-				case CLASS_MEDIC: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 4.0f;
-					break;
-				}
-
-				case CLASS_SNIPER: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 4.0f;
-					break;
-				}
-
-				case CLASS_SPY: {
-					vPos = Entity.GetBonePos(6);
-					flZOffset = 4.0f;
-					break;
-				}
-
+				case CLASS_SCOUT:
+				case CLASS_SOLDIER:
+				case CLASS_PYRO:
+				case CLASS_HEAVY:
+				case CLASS_MEDIC:
+				case CLASS_SNIPER:
+				case CLASS_SPY: return Entity.GetBonePos(6) + Vector(0.0f, 0.0f, 4.5f);
+				case CLASS_DEMOMAN: return Entity.GetBonePos(16) + Vector(0.0f, 0.0f, 4.5f);
+				case CLASS_ENGINEER: return Entity.GetBonePos(8) + Vector(0.0f, 0.0f, 4.5f);
 				default: return Vector();
 			}
+		};
 
-			return vPos + Vector(0.0f, 0.0f, flZOffset);
+		auto GetBodyPos = [&]() -> Vector {
+			return Entity.GetBonePos(0);
+		};
+
+		switch (Vars::Aimbot::AimPosition)
+		{
+			case 0: return GetBodyPos();
+			case 1: return GetHeadPos();
+			case 2:
+			{
+				CEntity Local = g_EntityCache.m_Local;
+
+				switch (Local.GetClassNum())
+				{
+					case CLASS_SNIPER: return Local.IsScoped() ? GetHeadPos() : GetBodyPos();
+					case CLASS_SPY:
+					{
+						return GetHeadPos();
+
+						/* doesn't work?? :((
+						switch (CEntity(g_EntityList.GetEntityFromHandle(Local.GetActiveWeapon())).GetItemDefinitionIndex()) {
+							case Spy_m_TheAmbassador:
+							case Spy_m_FestiveAmbassador: return GetHeadPos();
+							default: return GetBodyPos();
+						}
+						*/
+					}
+
+					default: return GetBodyPos();
+				}
+			}
 		}
-		
-		return Entity.GetOrigin() + Vector(0.0f, 0.0f, 45.0f);
 	}
 
-	return Entity.GetOrigin() + Vector(0.0f, 0.0f, Entity.IsTeleporter() ? 0.0f : 25.0f);
+	return Entity.GetOrigin() + Vector(0.0f, 0.0f, Entity.IsTeleporter() ? 5.0f : 25.0f);
 }
 
 void CAimbot::Aim(Vector &vAngles)
@@ -153,7 +145,7 @@ void CAimbot::Aim(Vector &vAngles)
 			Vector vViewAngles = g_Engine.GetViewAngles();
 			Vector vDelta = vAngles - vViewAngles;
 			Math::ClampAngles(vDelta);
-			vViewAngles += vDelta / (Vars::Aimbot::Smoothing * 20.0f);
+			vViewAngles += vDelta / (Vars::Aimbot::Smoothing * 10.0f);
 			g_Engine.SetViewAngles(vViewAngles);
 			break;
 		}
@@ -173,10 +165,6 @@ void CAimbot::Run()
 			return;
 		
 		Target_t Target = {};
-		
-		auto IsKeyDown = [&]() -> bool {
-			return !Vars::Aimbot::AimKey ? true : GetAsyncKeyState(Vars::Aimbot::AimKey);
-		};
 		
 		if (GetTarget(Local, Target) && IsKeyDown())
 		{

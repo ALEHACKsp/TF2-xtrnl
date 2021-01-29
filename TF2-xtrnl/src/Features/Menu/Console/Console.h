@@ -44,6 +44,7 @@ private:
 	HANDLE m_hConsoleOut, m_hConsoleIn;
 	CHAR_INFO *m_Screen;
 	int m_nScreenWidth, m_nScreenHeight;
+	int m_nFontWidth, m_nFontHeight;
 
 public:
 	void Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wchar_t *wszFont, int nFontWidth, int nFontHeight);

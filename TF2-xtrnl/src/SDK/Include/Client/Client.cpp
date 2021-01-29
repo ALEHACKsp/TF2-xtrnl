@@ -8,6 +8,14 @@ DWORD CClient::GetGlowObjectManager() const {
 	return Utils::Read<DWORD>(Offsets::dwClient + Offsets::dwGlowObjectManager);
 }
 
+int CClient::GetGlowObjectManagerSize() const {
+	return Utils::Read<int>((Offsets::dwClient + Offsets::dwGlowObjectManager + 0xC));
+}
+
+void CClient::SetGlowObjectColor(int nIndex, Color_t clr) const {
+	Utils::Write<GlowObjectDefinition_t>((GetGlowObjectManager() + (nIndex * 32) + 4), { Color::TOVEC(clr), Color::TOFLOAT(clr.a) });
+}
+
 DWORD CClient::GetEntityList() const {
 	return Utils::Read<DWORD>(Offsets::dwClient + Offsets::dwEntityList);
 }

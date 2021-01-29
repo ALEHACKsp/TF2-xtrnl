@@ -6,12 +6,13 @@ class CMenu
 {
 private:
 	int m_nMouseX, m_nMouseY;
-	int m_nLastItemX, m_nLastItemY;
+	int m_nCursorX, m_nCursorY;
 
 private:
+	void SetCursor(int x, int y);
 	bool InputBool(const std::wstring &wszName, bool &b);
 	bool InputInt(const std::wstring &wszName, int &n, int nMin = 0, int nMax = 0, int nStep = 1);
-	bool InputFloat(const std::wstring &wszName, float &f, float flMin = 0, float flMax = 0, float flStep = 1.0f);
+	bool InputFloat(const std::wstring &wszName, float &f, float flMin = 0, float flMax = 0, float flStep = 1.0f, int nPrecision = 0);
 	bool InputCombo(const std::wstring &wszName, int &n, const std::vector<std::pair<std::wstring, int>> &List);
 	bool Button(const std::wstring &wszName, bool bActive = false);
 

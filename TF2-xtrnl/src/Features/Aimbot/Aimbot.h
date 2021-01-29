@@ -14,6 +14,7 @@ private:
 
 	std::vector<Target_t> m_vecTargets;
 
+	bool IsKeyDown();
 	bool GetTargets(const CEntity &Local);
 	bool GetTarget(const CEntity &Local, Target_t &TargetOut);
 	Vector GetAimPosition(const CEntity &Entity, bool bIsPlayer);
