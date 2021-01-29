@@ -13,9 +13,6 @@ void CConsole::Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wcha
 	m_nScreenWidth = nWidth;
 	m_nScreenHeight = nHeight;
 
-	m_nFontWidth = nFontWidth;
-	m_nFontHeight = nFontHeight;
-
 	HWND hwConsole = GetConsoleWindow();
 	SetWindowLong(hwConsole, GWL_STYLE, GetWindowLong(hwConsole, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX);
 
@@ -28,9 +25,7 @@ void CConsole::Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wcha
 
 	SMALL_RECT m_Window = { 0, 0, 1, 1 };
 	SetConsoleWindowInfo(m_hConsoleOut, TRUE, &m_Window);
-
 	SetConsoleScreenBufferSize(m_hConsoleOut, { static_cast<short>(nWidth), static_cast<short>(nHeight) });
-
 	SetConsoleActiveScreenBuffer(m_hConsoleOut);
 
 	CONSOLE_FONT_INFOEX CFI = {};
@@ -46,7 +41,6 @@ void CConsole::Init(const wchar_t *wszTitle, int nWidth, int nHeight, const wcha
 
 	m_Window = { 0, 0, static_cast<short>(nWidth) - 1, static_cast<short>(nHeight) - 1 };
 	SetConsoleWindowInfo(m_hConsoleOut, TRUE, &m_Window);
-
 	SetConsoleMode(m_hConsoleIn, ENABLE_EXTENDED_FLAGS | ENABLE_MOUSE_INPUT);
 
 	m_Screen = new CHAR_INFO[nWidth * nHeight];
@@ -99,12 +93,14 @@ void CConsole::Fill(int x1, int y1, int x2, int y2, short col)
 
 POINT CConsole::GetMousePos()
 {
+	CONSOLE_FONT_INFO CFI = {};
+	GetCurrentConsoleFont(m_hConsoleOut, FALSE, &CFI);
 	static HWND hwConsole = GetConsoleWindow();
 	POINT p = {};
 	GetCursorPos(&p);
 	ScreenToClient(hwConsole, &p);
-	p.x /= (m_nFontWidth - 1);
-	p.y /= m_nFontHeight;
+	p.x /= (CFI.dwFontSize.X - 1);
+	p.y /= CFI.dwFontSize.Y;
 	return p;
 }
 
